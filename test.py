@@ -1,32 +1,56 @@
-def f(a):
-	leftstart=0
-	rightstart=(leftstart+len(a)-1)//2+1
-	leftarray=a[leftstart:rightstart]
-	rightarray=a[rightstart:]
-	if len(leftarray)==1 or len(rightarray)==1:
-		return merge(leftarray,rightarray)
+target=[]
+with open('IntegerArray.txt','r') as f:
+	target=f.readlines()
+for x in range(len(target)):
+	target[x]=int(target[x])
+def f(A): 
+	if len(A)==1:
+		return 0
 	else:
-		return merge(f(leftarray),f(rightarray))
-
-def merge(leftarray,rightarray):
-	temp=[]
+		rightStart=len(A)//2
+		leftArray=A[0:rightStart]
+		righArray=A[rightStart:]
+		B,b=count_and_sort(leftArray)
+		C,c=count_and_sort(righArray)
+		D,d=count_and_sort_split(B,C)
+		return b+c+d
+def count_and_sort(A):
+	if len(A)==1:
+		return A,0
+	elif len(A)==2:
+		if A[0]<A[1]:
+			return A,0
+		else:
+			temp=A[0]
+			A[0]=A[1]
+			A[1]=temp
+			return A,1
+	else:
+		rightStart=len(A)//2
+		leftArray=A[0:rightStart]
+		righArray=A[rightStart:]
+		B,b=count_and_sort(leftArray)
+		C,c=count_and_sort(righArray)
+		D,d=count_and_sort_split(B,C)
+		return D,b+c+d
+def count_and_sort_split(B,C):
+	result=[]
+	nums=0
 	i=0
 	j=0
-	while i<len(leftarray) or j < len(rightarray):
-		if i>=len(leftarray):
-			temp=temp+rightarray[j:]
+	while i<len(B) or j<len(C):
+		if i>=len(B):
+			result=result+C[j:]
 			break
-		elif j>=len(rightarray):
-			temp=temp+leftarray[i:]
+		elif j>=len(C):
+			result=result+B[i:]
 			break
-
-		if leftarray[i]<rightarray[j]:
-			temp.append(leftarray[i])
+		if B[i]<C[j]:
+			result.append(B[i])
 			i+=1
-		else:
-			temp.append(rightarray[j])
+		elif B[i]>C[j]:
+			result.append(C[j])
+			nums=nums+len(B[i:])
 			j+=1
-		
-	return temp
-
-print(f([4,8,5,6,9,7]))
+	return result,nums
+print(f(target))
